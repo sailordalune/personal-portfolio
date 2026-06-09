@@ -1,0 +1,15 @@
+packages:
+  - "apps/*"
+  - "packages/*"
+
+allowBuilds:
+  '@tsparticles/engine': true
+  react-particles: true
+  sharp: true
+  tsparticles-engine: true
+
+onlyBuiltDependencies:
+  - '@tsparticles/engine'
+  - react-particles
+  - sharp
+  - tsparticles-engine

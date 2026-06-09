@@ -1,0 +1,238 @@
+import { motion } from "framer-motion";
+import { useState, useEffect } from "react";
+import { Icon } from "@iconify/react";
+import Head from "next/head";
+import projectsData from "@/lib/data/projects.json";
+
+interface Project {
+  title: string;
+  image: string;
+  description: string;
+  tech: string[];
+  previewUrl?: string;
+  type: string | string[];
+  year: number | string;
+}
+
+const projects: Project[] = projectsData;
+
+export default function Projects() {
+  const [activeCategory, setActiveCategory] = useState("All");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [sortBy, setSortBy] = useState("newest");
+  const [loadedImages, setLoadedImages] = useState<Record<string, boolean>>({});
+  const [currentPage, setCurrentPage] = useState(0);
+
+  const types = ["All", "UI/UX Design", "Front-End Web", "Graphic Design"];
+  const getSortYear = (year: Project["year"]) => Number(String(year).match(/\d{4}/)?.[0] ?? 0);
+  const getProjectTypes = (project: Project) => Array.isArray(project.type) ? project.type : [project.type];
+
+  const filteredProjects = projects
+    .filter(project =>
+      (activeCategory === "All" || getProjectTypes(project).includes(activeCategory)) &&
+      (project.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+       project.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+       getProjectTypes(project).some(type => type.toLowerCase().includes(searchTerm.toLowerCase())) ||
+       project.tech.some(tech => tech.toLowerCase().includes(searchTerm.toLowerCase())))
+    )
+    .sort((a, b) => {
+      if (sortBy === "newest") return getSortYear(b.year) - getSortYear(a.year);
+      return getSortYear(a.year) - getSortYear(b.year);
+    });
+
+  const projectsPerPage = 6;
+  const totalPages = Math.ceil(filteredProjects.length / projectsPerPage);
+  const currentProjects = filteredProjects.slice(
+    currentPage * projectsPerPage,
+    (currentPage + 1) * projectsPerPage
+  );
+
+  const handleImageLoad = (imageUrl: string) => {
+    setLoadedImages(prev => ({ ...prev, [imageUrl]: true }));
+  };
+
+  // Reset to first page when filters change
+  useEffect(() => {
+    setCurrentPage(0);
+  }, [activeCategory, searchTerm, sortBy]);
+
+  return (
+    <>
+      <Head>
+        <title>Projects - Zamira Nasywa Udhata</title>
+        <meta name="description" content="Browse selected UI/UX, front-end, graphic design, digital content, and design system works by Zamira Nasywa Udhata." />
+      </Head>
+      <div className="min-h-screen bg-[#ffba79] px-4 py-16 sm:px-6 md:px-8 md:py-20">
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="container mx-auto"
+        >
+          <motion.div
+            initial={{ y: 50, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            className="mx-auto mt-10 max-w-7xl bg-white p-5 border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] sm:p-8"
+          >
+            <motion.h1 
+              initial={{ x: -20 }}
+              animate={{ x: 0 }}
+              className="mb-8 border-b-4 border-black pb-4 text-3xl font-black uppercase sm:text-4xl lg:text-5xl"
+            >
+              Selected Works
+            </motion.h1>
+
+            <div className="flex flex-col gap-4 mb-8">
+              <motion.div
+                initial={{ y: 20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                className="flex-1"
+              >
+                <input
+                  type="text"
+                  placeholder="Search works, designs, or projects..."
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="w-full p-3 border-4 border-black focus:outline-none"
+                />
+              </motion.div>
+
+              <motion.div
+                initial={{ y: 20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                className="flex flex-wrap gap-2"
+              >
+                {types.map((type) => (
+                  <button
+                    key={type}
+                    onClick={() => setActiveCategory(type)}
+                    className={`px-4 py-2 text-sm border-4 border-black transition-colors sm:px-6 sm:text-base ${
+                      activeCategory === type
+                        ? "bg-black text-white"
+                        : "bg-white hover:bg-gray-100"
+                    }`}
+                  >
+                    {type}
+                  </button>
+                ))}
+              </motion.div>
+
+              <motion.div className="flex justify-start sm:justify-end">
+                <select
+                  onChange={(e) => setSortBy(e.target.value)}
+                  className="p-3 border-4 border-black bg-white"
+                >
+                  <option value="newest">Newest First</option>
+                  <option value="oldest">Oldest First</option>
+                </select>
+              </motion.div>
+            </div>
+
+            {filteredProjects.length === 0 ? (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="text-center py-20"
+              >
+                <h3 className="text-2xl font-bold mb-2">Oops. 404 Not Found.</h3>
+                <p className="text-gray-600">There are no projects here</p>
+              </motion.div>
+            ) : (
+              <>
+                <div className="mb-8 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 lg:gap-8">
+                  {currentProjects.map((project, index) => (
+                  <motion.div
+                    key={`${project.title}-${currentPage}-${index}`}
+                    initial={{ y: 50, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    transition={{ duration: 0.5, delay: index * 0.1 }}
+                    whileHover={{ y: -5 }}
+                    className="bg-[#FFE4E1] border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
+                  >
+                    <div className="relative w-full h-48 border-b-4 border-black">
+                      {!loadedImages[project.image] && (
+                        <div className="absolute inset-0 flex items-center justify-center bg-gray-200">
+                          <span className="text-gray-600 font-bold text-lg">Loading...</span>
+                        </div>
+                      )}
+                      <img
+                        src={project.image}
+                        alt={project.title}
+                        onLoad={() => handleImageLoad(project.image)}
+                        className={`w-full h-48 object-cover ${
+                          loadedImages[project.image] ? 'opacity-100' : 'opacity-0'
+                        } transition-opacity duration-300`}
+                      />
+                    </div>
+                    <div className="p-5 sm:p-6">
+                      <div className="mb-2 flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+                        <h3 className="break-words text-xl font-bold">{project.title}</h3>
+                        <span className="w-fit shrink-0 text-sm bg-black text-white px-2 py-1">
+                          {project.year}
+                        </span>
+                      </div>
+                      <div className="mb-2 flex flex-wrap gap-2">
+                        {getProjectTypes(project).map((type) => (
+                          <span key={type} className="inline-block text-sm bg-gray-200 px-2 py-1 border-2 border-black">
+                            {type}
+                          </span>
+                        ))}
+                      </div>
+                      <p className="text-gray-700 mb-4">{project.description}</p>
+                      <div className="flex flex-wrap gap-2 mb-4">
+                        {project.tech.map((tech, techIndex) => (
+                          <span
+                            key={techIndex}
+                            className="bg-white px-3 py-1 text-sm border-2 border-black"
+                          >
+                            {tech}
+                          </span>
+                        ))}
+                      </div>
+                      <div className="flex gap-2">
+                        <a
+                          href={project.previewUrl ?? "#"}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center gap-1 bg-[#4CAF50] text-white px-3 py-1.5 text-sm hover:bg-[#45a049] transition-colors"
+                        >
+                          <Icon icon="mdi:eye-outline" className="w-4 h-4" />
+                          Preview Work
+                        </a>
+                      </div>
+                    </div>
+                  </motion.div>
+                ))}
+                </div>
+
+                <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4">
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={() => setCurrentPage(prev => Math.max(0, prev - 1))}
+                    disabled={currentPage === 0}
+                    className={`px-4 sm:px-6 md:px-8 py-2 sm:py-3 md:py-4 text-base sm:text-lg md:text-xl font-bold border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]
+                      ${currentPage === 0 ? 'bg-gray-200 cursor-not-allowed' : 'bg-[#FFB6C1] hover:bg-[#FF69B4]'}`}
+                  >
+                    <Icon icon="mdi:chevron-left" className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8" />
+                  </motion.button>
+                  <div className="min-w-full text-center text-sm font-medium sm:min-w-0 sm:text-base md:text-lg">
+                    Showing {currentPage * projectsPerPage + 1}-{Math.min((currentPage + 1) * projectsPerPage, filteredProjects.length)} of {filteredProjects.length}
+                  </div>
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={() => setCurrentPage(prev => Math.min(totalPages - 1, prev + 1))}
+                    disabled={currentPage === totalPages - 1}
+                    className={`px-4 sm:px-6 md:px-8 py-2 sm:py-3 md:py-4 text-base sm:text-lg md:text-xl font-bold border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]
+                      ${currentPage === totalPages - 1 ? 'bg-gray-200 cursor-not-allowed' : 'bg-[#FFB6C1] hover:bg-[#FF69B4]'}`}
+                  >
+                    <Icon icon="mdi:chevron-right" className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8" />
+                  </motion.button>
+                </div>
+              </>
+            )}
+          </motion.div>
+        </motion.div>
+      </div>
+    </>
+  );
+}

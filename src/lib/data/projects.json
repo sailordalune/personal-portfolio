@@ -1,0 +1,47 @@
+[
+  {
+    "title": "Tailora",
+    "image": "/tailora-thumbnail.png",
+    "description": "A marketplace concept for clothing alteration and custom fashion services, focused on user flow, virtual measurement, order tracking, and responsive interface design.",
+    "tech": ["UI/UX Design", "User Flow", "Responsive Design", "Design System"],
+    "type": ["UI/UX Design", "Front-End Web"],
+    "year": 2026,
+    "previewUrl": "https://tailoraa.vercel.app/"
+  },
+  {
+    "title": "Personal Portfolio Website",
+    "image": "/portfolio-thumbnail.png",
+    "description": "A personal portfolio website built to showcase profile, skills, selected works, experiences, and creative digital interests.",
+    "tech": ["Front-End", "Portfolio", "Responsive Web", "Personal Branding"],
+    "type": "Front-End Web",
+    "year": 2026,
+    "previewUrl": "#home"
+  },
+  {
+    "title": "Connected Instagram Feed Design",
+    "image": "/connected-feed-thumbnail.png",
+    "description": "A connected social media feed design created for organizational publication, focusing on visual consistency, layout composition, and color harmony.",
+    "tech": ["Graphic Design", "Social Media Design", "Content Design", "Visual Layout"],
+    "type": "Graphic Design",
+    "year": 2026,
+    "previewUrl": "/connected-instagram-feeds.pdf"
+  },
+  {
+    "title": "SolarPlan",
+    "image": "/solarplan-thumbnail.png",
+    "description": "A mobile app concept for homeowners to plan solar panel usage through energy cost calculation, vendor recommendations, PLTS education, maintenance reminders, and energy monitoring.",
+    "tech": ["UI/UX Design", "Mobile App", "SDG 7", "Energy Monitoring"],
+    "type": "UI/UX Design",
+    "year": 2026,
+    "previewUrl": "/solarplan.pdf"
+  },
+  {
+    "title": "Poster Design Collection",
+    "image": "/projects/posters/poster-design-thumbnail.jpg",
+    "description": "A collection of poster designs created for academic, organizational, and creative publication needs, focusing on visual layout, typography, color harmony, and clear message delivery.",
+    "tech": ["Graphic Design", "Poster Design", "Visual Layout", "Typography", "Publication Design"],
+    "type": "Graphic Design",
+    "year": "2025-2026",
+    "previewUrl": "/projects/posters/poster-design-collection.pdf"
+  }
+]

@@ -44,13 +44,6 @@ Project ini dikembangkan menggunakan beberapa teknologi berikut:
 * React
 * TypeScript
 * Tailwind CSS
-* Framer Motion
-* Iconify
-* React Type Animation
-* Next Sitemap
-* Vercel Analytics
-* PNPM
-* Vercel
 
 ## Struktur Project
 
